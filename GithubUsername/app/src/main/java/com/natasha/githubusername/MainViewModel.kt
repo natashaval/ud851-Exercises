@@ -13,13 +13,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainViewModel(private val api: Api): ViewModel() {
+class MainViewModel(private val userRepository: UserRepository): ViewModel() {
     private val _fullName = MutableLiveData<String>()
 
     val fullName: LiveData<String>
     get() = _fullName
-
-    private var userRepository: UserRepository = UserRepositoryImpl(api)
 
     fun searchUser(username: String) {
         userRepository.getUser(
