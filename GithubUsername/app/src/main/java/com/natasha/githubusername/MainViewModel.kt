@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.natasha.githubusername.data.User
+import com.natasha.githubusername.repository.UserRepository
+import com.natasha.githubusername.repository.UserRepositoryImpl
 import com.natasha.githubusername.service.Api
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
@@ -17,19 +19,13 @@ class MainViewModel(private val api: Api): ViewModel() {
     val fullName: LiveData<String>
     get() = _fullName
 
+    private var userRepository: UserRepository = UserRepositoryImpl(api)
+
     fun searchUser(username: String) {
-        api.getUser(username).enqueue(object : Callback<User> {
-            override fun onFailure(call: Call<User>, t: Throwable) {
-                Log.e("MainActivity", "onFailure: ", t)
-            }
-
-            override fun onResponse(call: Call<User>, response: Response<User>) {
-                response.body()?.let { user: User ->
-//                    fullName.text = user.name
-                    _fullName.value = user.name
-                }
-            }
-
-        })
+        userRepository.getUser(
+            username,
+            {user -> _fullName.value = user.name},
+            {t -> Log.e("MainActivity", "onFailure: ", t) }
+        )
     }
 }

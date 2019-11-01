@@ -27,14 +27,15 @@ class MainActivity : AppCompatActivity() {
     lateinit var api: Api
 
     private lateinit var viewModel: MainViewModel
-    private lateinit var factory: MainViewModelFactory
+
+    @Inject
+    lateinit var factory: MainViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         component.inject(this)
 
-        factory = MainViewModelFactory(api)
         viewModel = ViewModelProviders.of(this, factory).get(MainViewModel::class.java)
 
         viewModel.fullName.observe(this, Observer { name ->
